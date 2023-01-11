@@ -1,0 +1,18 @@
+{
+  "OOC": {
+    "General": "section1",
+    "Images": "channel",
+    "NSFW": "channel2",
+    "Plotting": "channel3"
+  },
+  "Rp information": {
+    "Characters": "section2",
+    "Side-characters": "channel",
+    "roleplay-notes": "channel2",
+    "world-info": "channel3",
+    "kinks": "channel4"
+  },
+  "Rp channels": {
+    "Roleplay": "section3"
+  }
+}

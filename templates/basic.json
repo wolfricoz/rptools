@@ -1,0 +1,13 @@
+{
+  "OOC": {
+    "General": "section1",
+    "Images": "channel"
+  },
+  "Rp information": {
+    "Characters": "section2",
+    "Side-characters": "channel"
+  },
+  "Rp channels": {
+    "Roleplay": "section3"
+  }
+}

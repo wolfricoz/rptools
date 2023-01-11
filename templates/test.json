@@ -1,0 +1,23 @@
+{
+  "section1": {
+    "section": "section1",
+    "channel": "channel",
+    "channel2": "channel2",
+    "channel3": "channel3",
+    "channel4": "channel4"
+  },
+  "section2": {
+    "section": "section2",
+    "channel": "channel",
+    "channel2": "channel2",
+    "channel3": "channel3",
+    "channel4": "channel4"
+  },
+  "section3": {
+    "section": "section3",
+    "channel": "channel",
+    "channel2": "channel2",
+    "channel3": "channel3",
+    "channel4": "channel4"
+  }
+}
