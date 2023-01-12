@@ -1,4 +1,4 @@
 #build settings
 markdown: kramdown
-theme: modernist
+theme: Modernist
 # remote_theme: benbalter/retlab
