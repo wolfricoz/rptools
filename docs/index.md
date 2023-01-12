@@ -1,6 +1,6 @@
 #build settings
 markdown: kramdown
-remote_theme: benbalter/retlab
+theme: modernist
 
 # Roleplay Tools
 Thank you for using the bot!
