@@ -2,8 +2,6 @@
 markdown: kramdown
 theme: modernist
 
-# Roleplay Tools
-Thank you for using the bot!
 
 ## Commands
 
