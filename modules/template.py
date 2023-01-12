@@ -62,6 +62,19 @@ class Server(commands.GroupCog):
     async def purge(self, interaction: discord.Interaction):
         await interaction.response.defer(ephemeral=True)
         archive = discord.utils.get(interaction.guild.categories, name="archive")
+        confirm = True
+        while confirm is True:
+            desc = "to purge the archive, please type **'confirm'**"
+            embed = discord.Embed(title=f"Purge Archive?", description=desc)
+            conf = await interaction.channel.send(embed=embed)
+            msg = await self.bot.wait_for('message', check=check)
+            if "confirm" in msg.content.lower():
+                desc = "Confirmation received, archive will be purged."
+                embed = discord.Embed(title=f"Purge Archive?", description=desc)
+                confirm = False
+                await conf.edit(embed=embed)
+                await msg.delete()
+                sleep(3)
         if interaction.user == interaction.guild.owner:
             for chan in archive.channels:
                 await chan.delete(reason="Purged")
