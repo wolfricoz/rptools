@@ -1,8 +1,3 @@
-#build settings
-markdown: kramdown
-theme: modernist
-
-
 ## Commands
 
 ##### `/help`
