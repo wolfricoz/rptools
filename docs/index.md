@@ -1,5 +1,3 @@
-## Commands
-
 ##### `/help`
 This command sends you to this page!
 
