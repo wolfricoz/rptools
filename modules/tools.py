@@ -14,6 +14,9 @@ class Tools(commands.Cog):
         if dicetype < 2:
             interaction.followup.send("Please choose a dice with at least 2 sides!")
             return
+        if dicetype > 1000:
+            interaction.followup.send("Please choose a dice with less than 1000 sides!")
+            return
         if amount > 10:
             interaction.followup.send("you can roll up to 10 dice!")
             return

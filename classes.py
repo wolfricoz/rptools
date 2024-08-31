@@ -10,8 +10,8 @@ class Templater(ABC):
         for c in interaction.guild.text_channels:
             if c.category is archive:
                 print(f"passing {c}")
+                pass
             else:
-                print(f"removing {c}")
                 await c.edit(category=archive, name=f"archived-{c}", )
                 await c.set_permissions(interaction.guild.default_role, read_messages=False)
         for a in interaction.guild.categories:
@@ -22,7 +22,6 @@ class Templater(ABC):
         for item in data:
             cat = await interaction.guild.create_category(name=f"{item}")
             for i in data[item]:
-                print(f"channel {i}")
                 await interaction.guild.create_text_channel(name=f"{i}", category=cat)
 
 
@@ -39,3 +38,16 @@ class Gen(ABC):
                 names.append(data['names'][r])
                 x += 1
             return names
+
+    @abstractmethod
+    async def lname(amount):
+        with open(f'tools/lnames.json', 'r') as f:
+            data = json.load(f)
+            x = 0
+            names = []
+            while x < amount:
+                r = random.randint(0, len(data['names']))
+                names.append(data['names'][r].lower().capitalize())
+                x += 1
+            return names
+

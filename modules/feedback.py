@@ -16,7 +16,7 @@ class FeedBack(commands.Cog):
 
     @app_commands.command(name="help", description="review the help documents")
     async def feedback(self, interaction: discord.Interaction):
-        await interaction.response.send_message("You can review the help documents here:", ephemeral=True)
+        await interaction.response.send_message("You can review the help documents here: https://wolfricoz.github.io/rptools/", ephemeral=True)
 
 
 async def setup(bot):

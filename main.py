@@ -23,16 +23,6 @@ bot = commands.Bot(command_prefix=prefix, case_insensitive=False, intents=intent
 
 # imports database and starts it
 # error logging
-logger = logging.getLogger('discord')
-logger.setLevel(logging.DEBUG)
-handler = logging.FileHandler(filename='bot.log', encoding='utf-8', mode='w')
-handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger.addHandler(handler)
-logger2 = logging.getLogger('sqlalchemy')
-logger2.setLevel(logging.WARN)
-handler2 = logging.FileHandler(filename='bot.log', encoding='utf-8', mode='a')
-handler2.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
-logger2.addHandler(handler2)
 
 
 @bot.command()
@@ -40,6 +30,15 @@ async def sync(ctx):
     s = await ctx.bot.tree.sync()
     await ctx.send(f"bot has synced {len(s)} servers")
 
+@bot.command(name="reload")
+async def reload(ctx):
+    for filename in os.listdir("modules"):
+        if filename.endswith('.py'):
+            await bot.reload_extension(f"modules.{filename[:-3]}")
+            print({filename[:-3]})
+        else:
+            print(f'Unable to reload {filename[:-3]}')
+    await ctx.send("bot reloaded")
 
 # noinspection PyMethodParameters
 class Main:
@@ -59,19 +58,19 @@ class Main:
         # PRINTS HOW MANY GUILDS / SERVERS THE BOT IS IN.
         formguilds = "\n".join(guilds)
         devroom = bot.get_channel(1061362347739971694)
-        # await devroom.send(f"{formguilds} \n RP server setup 1.0.0 is in {guild_count} guilds.")
+        await devroom.send(f"RP server setup 1.0.0 is in {guild_count} guilds.")
         # SYNCS UP SLASH COMMANDS
         await bot.tree.sync()
         return guilds
 
-    # @bot.event
-    # async def on_guild_join(guild):
-    #     #SYNCS COMMANDS
-    #     await bot.tree.sync()
-    #     # sends owner instructions
-    #     await guild.owner.send("Thank you for inviting Age Verifier, please read https://docs.google.com/document/d/1jlDPYCjYO0vpIcDpKAuWBX-iNDyxOTSdLhn_SsVGeks/edit?usp=sharing to set up the bot")
-    #     log = bot.get_channel(1022319186950758472)
-    #     await log.send(f"Joined {guild}({guild.id})")
+    @bot.event
+    async def on_guild_join(guild):
+        #SYNCS COMMANDS
+        await bot.tree.sync()
+        # sends owner instructions
+        await guild.owner.send("Thank you for inviting RP tools, you can find the bots documentation here: https://wolfricoz.github.io/rptools/")
+        log = bot.get_channel(1061362347739971694)
+        await log.send(f"Joined {guild}({guild.id}) (owner:{guild.owner})")
 
     @bot.event
     async def setup_hook():
@@ -85,19 +84,18 @@ class Main:
 
     tree = bot.tree
 
-    @tree.error
-    async def on_app_command_error(
-            interaction: Interaction,
-            error: AppCommandError
-    ):
-        if isinstance(error, app_commands.CheckFailure):
-            await interaction.response.send_message(f"No permissions", ephemeral=True)
-        else:
-            await interaction.followup.send(f"Command failed: {error}")
-            logging.error(traceback.format_exc())
-            channel = bot.get_channel(1062803745299243040)
-            await channel.send(traceback.format_exc())
-        # raise error
-
+    # @tree.error
+    # async def on_app_command_error(
+    #         interaction: Interaction,
+    #         error: AppCommandError
+    # ):
+    #     if isinstance(error, app_commands.CheckFailure):
+    #         await interaction.response.send_message(f"No permissions", ephemeral=True)
+    #     else:
+    #         await interaction.followup.send(f"Command failed: {error}")
+    #         logging.error(traceback.format_exc())
+    #         channel = bot.get_channel(1062803745299243040)
+    #         await channel.send(traceback.format_exc())
+    #     # raise error
 
 bot.run(TOKEN)
