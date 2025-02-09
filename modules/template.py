@@ -37,13 +37,10 @@ class Server(commands.GroupCog):
                             await msg.delete()
                             sleep(3)
                     data = json.load(f)
-                    archive = discord.utils.get(interaction.guild.categories, name="archive")
-                    if archive is not None:
-                        await Templater.apply(interaction, archive, data)
-                    else:
+                    archive: discord.Category = discord.utils.get(interaction.guild.categories, name="archive")
+                    if archive is  None:
                         archive = await interaction.guild.create_category(name=f"archive")
-                        await Templater.apply(interaction, archive, data)
-
+                    await Templater.apply(interaction, archive, data)
                     desc = "to clear the archive please use **/server archivepurge**"
                     embed = discord.Embed(title=f"Template successfully applied!", description=desc)
                     await conf.edit(embed=embed)
