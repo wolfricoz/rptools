@@ -1,5 +1,6 @@
 import json
 import os
+from datetime import datetime
 from time import sleep
 import discord
 from discord import app_commands
@@ -18,6 +19,7 @@ class Server(commands.GroupCog):
         if len(interaction.guild.members) >= 10:
             await interaction.followup.send("[Safeguard] Guild has more than 10 users, command will not run")
             return
+        archive_name = f"archive-{datetime.now().strftime('%d-%m-%Y')}"
         if interaction.user == interaction.guild.owner:
             def check(m):
                 return m.content is not None and m.channel == interaction.channel
@@ -37,9 +39,9 @@ class Server(commands.GroupCog):
                             await msg.delete()
                             sleep(3)
                     data = json.load(f)
-                    archive: discord.Category = discord.utils.get(interaction.guild.categories, name="archive")
+                    archive: discord.Category = discord.utils.get(interaction.guild.categories, name=archive_name)
                     if archive is  None:
-                        archive = await interaction.guild.create_category(name=f"archive")
+                        archive = await interaction.guild.create_category(name=archive_name)
                     await Templater.apply(interaction, archive, data)
                     desc = "to clear the archive please use **/server archivepurge**"
                     embed = discord.Embed(title=f"Template successfully applied!", description=desc)
@@ -56,9 +58,15 @@ class Server(commands.GroupCog):
             await interaction.followup.send("[Safeguard] No permission")
 
     @app_commands.command(name="archivepurge", description="removes ALL archived channels, this can NOT be undone.")
+    @app_commands.checks.has_permissions(administrator=True)
     async def purge(self, interaction: discord.Interaction):
+        if interaction.user.id != interaction.guild.owner.id :
+            return await interaction.response.send_message("Only the owner of the server can run this command", ephemeral=True)
         await interaction.response.defer(ephemeral=True)
-        archive = discord.utils.get(interaction.guild.categories, name="archive")
+
+        def check(m) :
+            return m.content is not None and m.channel == interaction.channel
+
         confirm = True
         while confirm is True:
             desc = "to purge the archive, please type **'confirm'**"
@@ -72,15 +80,12 @@ class Server(commands.GroupCog):
                 await conf.edit(embed=embed)
                 await msg.delete()
                 sleep(3)
-        if interaction.user == interaction.guild.owner:
-            for chan in archive.channels:
-                await chan.delete(reason="Purged")
-            try:
-                await interaction.followup.send("Archive has been purged")
-            except discord.NotFound:
-                pass
-        else:
-            await interaction.followup.send("[Safeguard] No permission")
+        categories = [category for category in interaction.guild.categories if category.name.lower().startswith("archive")]
+        for category in categories:
+            for channel in category.channels:
+                await channel.delete()
+            await category.delete()
+
 
 
 async def setup(bot):
