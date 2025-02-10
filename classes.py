@@ -30,6 +30,7 @@ class Templater(ABC) :
 
 # noinspection PyMethodParameters
 class Gen(ABC) :
+	@staticmethod
 	@abstractmethod
 	async def name(gtype, amount) :
 		with open(f'tools/{gtype}names.json', 'r') as f :

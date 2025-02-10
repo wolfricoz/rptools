@@ -1,1 +1,5 @@
 /.idea/
+/.env
+/bot.log
+/logs/log-02-10-2025.txt
+/modules/logs/log-02-10-2025.txt
