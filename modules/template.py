@@ -4,6 +4,7 @@ from datetime import datetime
 from time import sleep
 import discord
 from discord import app_commands
+from discord.app_commands import Choice
 from discord.ext import commands
 from classes import Templater
 
@@ -13,7 +14,12 @@ class Server(commands.GroupCog):
     def __init__(self, bot):
         self.bot = bot
 
+    async def auto_complete_templates(self, interaction, current: str):
+        templates = [file[:-5] for file in os.listdir('templates')]
+        return [Choice(name=template, value=template) for template in templates if template.lower().startswith(current.lower())]
+
     @app_commands.command(name="template", description="Applies a template to your server and archives old channels. 'help' for templates")
+    @app_commands.autocomplete(template=auto_complete_templates)
     async def template(self, interaction: discord.Interaction, template: str):
         await interaction.response.defer(thinking=False)
         if len(interaction.guild.members) >= 10:
