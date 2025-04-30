@@ -1,15 +1,13 @@
-import json
-import os
 from datetime import datetime
 from time import sleep
+
 import discord
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
 from discord_py_utilities.messages import send_response
-from sqlalchemy import false
 
-from classes import Templater
+from classes.Templater import Templater
 from data.globals import MAX_TEMPLATES
 from data.messages import NOT_OWNER_ERROR
 from database.TemplateTransactions import TemplateTransactions

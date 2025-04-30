@@ -2,7 +2,7 @@ import discord
 from discord import app_commands
 from discord.app_commands import Choice
 from discord.ext import commands
-from classes import Gen
+from classes.Generators import Gen
 
 
 class Generators(commands.GroupCog):
