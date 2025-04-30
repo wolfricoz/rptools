@@ -1,1 +1,6 @@
-discord
+discord~=2.3.2
+python-dotenv~=1.1.0
+SQLAlchemy~=2.0.40
+PyMySQL~=1.1.1
+SQLAlchemy-Utils~=0.41.2
+discord-py-utilities>=0.0.8

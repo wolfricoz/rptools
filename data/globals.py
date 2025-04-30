@@ -1,0 +1,1 @@
+MAX_TEMPLATES = 20

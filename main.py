@@ -12,7 +12,12 @@ from discord.ext import commands
 # imports dotenv, and loads items
 from dotenv import load_dotenv
 
+from database.database import create_tables
+
 load_dotenv(".env")
+
+create_tables()
+
 prefix = os.getenv('PREFIX')
 TOKEN = os.getenv('TOKEN')
 # declares bots intents, and allows commands to be ran

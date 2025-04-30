@@ -1,0 +1,1 @@
+NOT_OWNER_ERROR = "Only the owner of the server can run this command"
