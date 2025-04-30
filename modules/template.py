@@ -64,7 +64,7 @@ class Templates(commands.GroupCog, name="template") :
 		return await send_response(interaction, f"Template '{name}' created successfully! You can create {MAX_TEMPLATES - TemplateTransactions().count_templates(interaction.user.id)} more templates", ephemeral=True)
 
 	@app_commands.command(name="restore",
-	                      description="Applies a template to your server and archives old channels. 'help' for templates")
+	                      description="Applies a template to your server and archives old channels.")
 	@app_commands.autocomplete(template=auto_complete_templates)
 	@app_commands.checks.has_permissions(administrator=True)
 	async def restore_template(self, interaction: discord.Interaction, template: str) :
@@ -75,7 +75,6 @@ class Templates(commands.GroupCog, name="template") :
 			return await send_response(interaction, f"Template does not exist", ephemeral=True)
 		if interaction.user != interaction.guild.owner :
 			return await interaction.followup.send("Only the owner of the server can run this command", ephemeral=True)
-		template_data: dict = template.data
 		if await Confirm().send_confirm(interaction, f"Are you sure you want to apply the `{template.name}` template?") is False:
 			return await send_response(interaction, "Cancelled", ephemeral=True)
 		archive: discord.Category = discord.utils.get(interaction.guild.categories, name=archive_name)
@@ -85,14 +84,14 @@ class Templates(commands.GroupCog, name="template") :
 		return await send_response(interaction, f"Template '{template.name}' applied successfully!", ephemeral=True)
 
 	@app_commands.command(name="list",
-	                      description="Applies a template to your server and archives old channels. 'help' for templates")
+	                      description="Lists all templates you have created")
 	@app_commands.checks.has_permissions(administrator=True)
 	async def list_template(self, interaction: discord.Interaction) :
 		templates = TemplateTransactions().get_all_templates(interaction.user.id)
 		await send_response(interaction, f"Here is a list of your templates:\n{'\n* '.join([""] + templates)}", ephemeral=True)
 
 	@app_commands.command(name="view",
-	                      description="Applies a template to your server and archives old channels. 'help' for templates")
+	                      description="View a template you have created")
 	@app_commands.autocomplete(template=auto_complete_templates)
 	@app_commands.checks.has_permissions(administrator=True)
 	async def view_template(self, interaction: discord.Interaction, template: str) :
@@ -113,7 +112,7 @@ class Templates(commands.GroupCog, name="template") :
 		return None
 
 	@app_commands.command(name="delete",
-	                      description="Applies a template to your server and archives old channels. 'help' for templates")
+	                      description="Delete a template you have created")
 	@app_commands.autocomplete(template=auto_complete_templates)
 	@app_commands.checks.has_permissions(administrator=True)
 	async def delete_template(self, interaction: discord.Interaction, template: str) :
@@ -124,54 +123,6 @@ class Templates(commands.GroupCog, name="template") :
 			if TemplateTransactions().delete_template(interaction.user.id, template) is False:
 				return await send_response(interaction, f"Template '{template}' does not exist", ephemeral=True)
 		return await send_response(interaction, f"Template '{template}' deleted successfully! You can create {MAX_TEMPLATES - TemplateTransactions().count_templates(interaction.user.id)} more templates", ephemeral=True)
-
-	@app_commands.command(name="template",
-	                      description="Applies a template to your server and archives old channels. 'help' for templates")
-	@app_commands.autocomplete(template=auto_complete_templates)
-	@app_commands.checks.has_permissions(administrator=True)
-	async def template(self, interaction: discord.Interaction, template: str) :
-		await interaction.response.defer(thinking=False)
-		if len(interaction.guild.members) >= 10 :
-			await interaction.followup.send("[Safeguard] Guild has more than 10 users, command will not run")
-			return
-		if interaction.user != interaction.guild.owner :
-			return await interaction.followup.send("Only the owner of the server can run this command", ephemeral=True)
-		archive_name = f"archive-{datetime.now().strftime('%d-%m-%Y')}"
-
-		def check(m) :
-			return m.content is not None and m.channel == interaction.channel
-
-		confirm = True
-		try :
-			with open(f'templates/{template}.json', 'r') as f :
-				while confirm is True :
-					desc = "to apply this template, please type **'confirm'**"
-					embed = discord.Embed(title=f"Apply template?", description=desc)
-					conf = await interaction.channel.send(embed=embed)
-					msg = await self.bot.wait_for('message', check=check)
-					if "confirm" in msg.content.lower() :
-						desc = "Confirmation given, applying template now."
-						embed = discord.Embed(title=f"Apply template?", description=desc)
-						confirm = False
-						await conf.edit(embed=embed)
-						await msg.delete()
-						sleep(3)
-				data = json.load(f)
-				archive: discord.Category = discord.utils.get(interaction.guild.categories, name=archive_name)
-				if archive is None :
-					archive = await interaction.guild.create_category(name=archive_name)
-				await Templater.apply(interaction, archive, data)
-				desc = "to clear the archive please use **/server archivepurge**"
-				embed = discord.Embed(title=f"Template successfully applied!", description=desc)
-				await conf.edit(embed=embed)
-
-		except Exception as e :
-			print(e)
-			templates = []
-			for file in os.listdir('templates') :
-				templates.append(file[:-5])
-			temps = "\n- ".join(templates)
-			await interaction.followup.send(f"- {temps}")
 
 	@app_commands.command(name="archivepurge", description="removes ALL archived channels, this can NOT be undone.")
 	@app_commands.checks.has_permissions(administrator=True)
