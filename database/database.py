@@ -1,12 +1,14 @@
+from typing import List
+
 import pymysql
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy_utils import create_database, database_exists
 
 from data.config import Config
 
 pymysql.install_as_MySQLdb()
-from sqlalchemy import BigInteger, ForeignKey, String, create_engine, JSON
-engine = create_engine(Config().get_db_url(), echo=True)
+from sqlalchemy import BigInteger, ForeignKey, Integer, NullPool, String, create_engine, JSON
+engine = create_engine(Config().get_db_url(), echo=False, poolclass=NullPool)
 if not database_exists(engine.url) :
 	create_database(engine.url)
 
@@ -26,6 +28,24 @@ class Template(Base):
 	name: Mapped[str] = mapped_column(String(255))
 	data: Mapped[str] = mapped_column(JSON)
 
+class Character(Base):
+	__tablename__ = "characters"
+	id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+	user_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("users.id", ondelete="CASCADE"))
+	prefix: Mapped[str] = mapped_column(String(255))
+	name: Mapped[str] = mapped_column(String(255))
+	character_info: Mapped[List["CharacterInfo"]] = relationship(back_populates="character")
+	# Add other columns as needed
+
+class CharacterInfo(Base):
+	__tablename__ = "character_info"
+	id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
+	character_id: Mapped[int] = mapped_column(BigInteger, ForeignKey("characters.id", ondelete="CASCADE"))
+	key: Mapped[str] = mapped_column(String(255))
+	value: Mapped[str] = mapped_column(String(4096))
+	position: Mapped[int] = mapped_column(Integer)
+	character: Mapped[Character] = relationship("Character", back_populates="character_info")
+	# Add other columns as needed
 
 def create_tables():
 	"""Creates the tables in the database."""

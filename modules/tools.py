@@ -2,6 +2,9 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 import random
+from translate import Translator
+
+from data.languages import LANGUAGES
 
 
 class Tools(commands.Cog):
@@ -38,6 +41,19 @@ class Tools(commands.Cog):
             await interaction.channel.send(f"Heads!")
         else:
             await interaction.channel.send(f"Tails!")
+
+    async def lang_autocomplete(self, interaction: discord.Interaction, current: str):
+
+        return [app_commands.Choice(name=value, value=key) for key, value in LANGUAGES.items() if value.lower().startswith(current.lower())][:25]
+
+
+    @app_commands.command(name="translate", description="translates a message to another language")
+    @app_commands.autocomplete(from_lang=lang_autocomplete, target_language=lang_autocomplete)
+    async def translator(self, interaction: discord.Interaction, text: str, from_lang :str = "en", target_language: str = "en"):
+        translate = Translator(from_lang=from_lang.lower(),to_lang=target_language.lower())
+        translation = translate.translate(text)
+        await interaction.response.send_message(f"Translated from {from_lang} to {target_language} ```{translation}```", ephemeral=True)
+
 
 
 async def setup(bot):
