@@ -18,4 +18,4 @@ class Config():
 
 	def get_db_url(self):
 		"""Returns the database URL for SQLAlchemy."""
-		return f"mysql+pymysql://{self.Config['DATABASE_USER']}:{self.Config['DATABASE_PASSWORD']}@{self.Config['DATABASE_HOST']}:{self.Config['DATABASE_PORT']}/{self.Config['DATABASE_NAME']}"
+		return f"postgresql+psycopg2://{self.Config['DATABASE_USER']}:{self.Config['DATABASE_PASSWORD']}@{self.Config['DATABASE_HOST']}:{self.Config['DATABASE_PORT']}/{self.Config['DATABASE_NAME']}"

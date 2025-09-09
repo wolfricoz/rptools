@@ -1,12 +1,9 @@
 from typing import List
-
-import pymysql
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 from sqlalchemy_utils import create_database, database_exists
 
 from data.config import Config
 
-pymysql.install_as_MySQLdb()
 from sqlalchemy import BigInteger, ForeignKey, Integer, NullPool, String, create_engine, JSON
 engine = create_engine(Config().get_db_url(), echo=False, poolclass=NullPool)
 if not database_exists(engine.url) :
